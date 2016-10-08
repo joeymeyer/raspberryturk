@@ -4,7 +4,7 @@ from itertools import product
 from sklearn.linear_model import LinearRegression
 from sklearn.preprocessing import PolynomialFeatures
 from scipy.spatial.distance import euclidean
-from raspberryturk.embedded.session import Session
+from raspberryturk.embedded.session.path import session_path
 
 if __name__ != '__main__':
     exit(0)
@@ -57,6 +57,5 @@ P = np.array(P, np.float32)
 Q = np.array(Q, np.float32)
 
 M = cv2.getPerspectiveTransform(P, Q)
-s = Session()
-s.set_chessboard_perspective_transform(M)
+np.save(session_path('chessboard_perspective_transform.npy'), M)
 print "Camera position recalibration successful."
