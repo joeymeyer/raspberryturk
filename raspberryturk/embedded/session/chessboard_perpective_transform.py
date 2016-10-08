@@ -1,4 +1,3 @@
-import os
 import numpy as np
 import logging
 from path import session_path
