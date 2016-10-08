@@ -1,7 +1,5 @@
 from path import session_path
-from chess.pgn import read_game
-from chess.pgn import Game
-from chess.pgn import FileExporter
+from chess.pgn import read_game, Game, FileExporter
 
 def _pgn_path():
     return session_path('game.pgn')
