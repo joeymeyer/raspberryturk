@@ -72,7 +72,7 @@ def _get_args():
     to capture the current frame, and 'q' to quit."
     prog = os.path.relpath(__file__)
     parser = argparse.ArgumentParser(prog=prog, description=desc)
-    parser.add_argument('-b', '--base_path', type=os.path.abspath, required=True,
+    parser.add_argument('base_path', type=os.path.abspath,
                         help="Base path for data collection.")
     parser.add_argument('-s', '--seed', default=1, type=int,
                         help="Random seed to initialize board.")
