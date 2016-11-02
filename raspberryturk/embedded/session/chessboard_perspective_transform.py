@@ -70,7 +70,17 @@ def recalibrate_camera_position():
 
     M = cv2.getPerspectiveTransform(P, Q)
     np.save(_chessboard_perspective_transform_path(), M)
-    print "Camera position recalibration successful."
+
+def main():
+    logger = logging.getLogger(__name__)
+    logger.info("Begin camera position recalibration...")
+    try:
+        recalibrate_camera_position()
+    except AssertionError as e:
+        logger.error(e)
+    else:
+        logger.info("Camera position recalibration successful.")
+
 
 if __name__ == '__main__':
-    recalibrate_camera_position()
+    main()
