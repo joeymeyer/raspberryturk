@@ -1,6 +1,9 @@
 import time
 import serial
 import numpy as np
+from pytweening import easeInOutQuint, easeOutSine
+from scipy.misc import derivative
+from scipy.interpolate import interp1d
 
 from pypose.ax12 import *
 from pypose.driver import Driver
@@ -15,10 +18,21 @@ RESTING_POSITION = (512, 512)
 def _register_bytes_to_value(register_bytes):
     return register_bytes[0] + (register_bytes[1]<<8)
 
-def _adjusted_speed(start_position, goal_position, position, min_speed, max_speed):
-    distance = [1.0 - float(abs(position[i]-goal_position[i])) / float(max(abs(start_position[i]-goal_position[i]), 1)) for i in range(len(SERVOS))]
-    speed = min_speed + (np.sin(np.pi * np.array(distance)) * (max_speed - min_speed))
-    return speed.astype(np.int)
+def _easing_derivative(p):
+    d = 0.0
+    try:
+        d = derivative(easeInOutQuint, p, dx=1e-6)
+    except ValueError:
+        pass
+    return d
+
+def _adjusted_speed(start_position, goal_position, position):
+    r = np.array([start_position, goal_position])
+    clipped_position = np.clip(position, r.min(), r.max())
+    f = interp1d([start_position, goal_position], [0,1])
+    adj = (_easing_derivative(f(clipped_position)) / _easing_derivative(0.5))
+    amp = easeOutSine(abs(goal_position - start_position) / 1023.0)
+    return np.int(MIN_SPEED + (MAX_SPEED - MIN_SPEED) * adj * amp)
 
 class Arm(object):
     def __init__(self, port="/dev/ttyUSB0"):
@@ -41,7 +55,7 @@ class Arm(object):
             self.driver.setReg(i, P_GOAL_POSITION_L, [goal_position[i%2]%256, goal_position[i%2]>>8])
         while self._is_moving():
             position = self.current_position()
-            speed = _adjusted_speed(start_position, goal_position, position, MIN_SPEED, MAX_SPEED)
+            speed = [_adjusted_speed(start_position[i%2], goal_position[i%2], position[i%2]) for i in SERVOS]
             self.set_speed(speed)
 
     def set_speed(self, speed):
