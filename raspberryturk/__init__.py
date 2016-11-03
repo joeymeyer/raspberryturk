@@ -22,3 +22,6 @@ def games_path(*paths):
 
 def opt_path(*paths):
     return _var_subdir('opt', *paths)
+
+class RaspberryTurkError(Exception):
+    pass
