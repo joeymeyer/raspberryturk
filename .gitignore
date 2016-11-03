@@ -124,6 +124,3 @@ ENV/
 
 ### Atom Sync ###
 .sync-config.cson
-
-### Raspberry Turk Session ###
-raspberryturk/embedded/session/.session

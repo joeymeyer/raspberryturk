@@ -1,8 +1,8 @@
-from path import session_path
+from raspberryturk import games_path
 from chess.pgn import read_game, Game, FileExporter
 
 def _pgn_path():
-    return session_path('game.pgn')
+    return games_path('game.pgn')
 
 def _game():
     pgn = open(_pgn_path())

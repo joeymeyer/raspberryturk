@@ -1,7 +1,7 @@
 import cv2
 from raspberryturk.core.vision.chessboard_frame import ChessboardFrame
 from raspberryturk.core.vision.constants import BOARD_SIZE, SQUARE_SIZE
-from raspberryturk.embedded.session.chessboard_perspective_transform import get_chessboard_perspective_transform
+from raspberryturk.embedded.vision.chessboard_perspective_transform import get_chessboard_perspective_transform
 
 class ChessCamera(object):
     def __init__(self):
