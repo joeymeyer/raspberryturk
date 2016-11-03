@@ -1,18 +1,16 @@
 import numpy as np
 import logging
-from path import session_path
+from raspberryturk import lib_path, RaspberryTurkError
 
 def _chessboard_perspective_transform_path():
-    return session_path('chessboard_perspective_transform.npy')
+    return lib_path('chessboard_perspective_transform.npy')
 
 def get_chessboard_perspective_transform():
     try:
         M = np.load(_chessboard_perspective_transform_path())
         return M
     except IOError:
-        logging.error("No chessboard perspective transform found. \
-        Camera position recalibration required.")
-        return None
+        raise RaspberryTurkError("No chessboard perspective transform found. Camera position recalibration required.")
 
 def recalibrate_camera_position():
     import cv2
