@@ -1,5 +1,6 @@
 import os
 from logging.config import fileConfig
+from socket import gethostname
 base_path = os.path.dirname(os.path.realpath(__file__))
 fileConfig(os.path.join(base_path, 'logging.ini'))
 
@@ -25,3 +26,6 @@ def opt_path(*paths):
 
 class RaspberryTurkError(Exception):
     pass
+
+def is_running_on_raspberryturk():
+    return gethostname() == 'raspberryturk'
