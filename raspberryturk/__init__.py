@@ -29,3 +29,13 @@ class RaspberryTurkError(Exception):
 
 def is_running_on_raspberryturk():
     return gethostname() == 'raspberryturk'
+
+if is_running_on_raspberryturk():
+    def _safe_makedirs(path):
+        try:
+            os.makedirs(path)
+        except OSError as e:
+            if e.errno != 17:
+                raise e
+    dirs = [cache_path(), lib_path(), games_path(), opt_path()]
+    [_safe_makedirs(d) for d in dirs]
