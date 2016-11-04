@@ -20,6 +20,9 @@
 
 """
 
+# This is an adapted version of the ax12.py file found in
+# the pypose project (https://github.com/vanadiumlabs/pypose).
+
 # Control Table Symbolic Constants - EEPROM AREA
 P_MODEL_NUMBER_L = 0
 P_MODOEL_NUMBER_H = 1

@@ -19,6 +19,9 @@
   Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 """
 
+# This is an adapted version of the driver.py file found in
+# the pypose project (https://github.com/vanadiumlabs/pypose).
+
 import serial
 import time
 import sys
