@@ -43,6 +43,7 @@ class Driver:
         self.hasInterpolation = interpolation
         self.direct = direct
         self.logger = logging.getLogger(__name__)
+        time.sleep(3)
 
     def execute(self, index, ins, params):
         """ Send an instruction to a device. """

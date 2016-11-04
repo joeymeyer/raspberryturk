@@ -4,7 +4,7 @@ import numpy as np
 from pytweening import easeInOutQuint, easeOutSine
 from scipy.misc import derivative
 from scipy.interpolate import interp1d
-
+from raspberryturk.embedded.motion.arm_movement_engine import ArmMovementEngine
 from pypose.ax12 import *
 from pypose.driver import Driver
 
@@ -29,15 +29,15 @@ def _easing_derivative(p):
 def _adjusted_speed(start_position, goal_position, position):
     r = np.array([start_position, goal_position])
     clipped_position = np.clip(position, r.min(), r.max())
-    f = interp1d([start_position, goal_position], [0,1])
-    adj = (_easing_derivative(f(clipped_position)) / _easing_derivative(0.5))
+    f = interp1d(r, [0,1])
+    adj = _easing_derivative(f(clipped_position)) / _easing_derivative(0.5)
     amp = easeOutSine(abs(goal_position - start_position) / 1023.0)
     return np.int(MIN_SPEED + (MAX_SPEED - MIN_SPEED) * adj * amp)
 
 class Arm(object):
     def __init__(self, port="/dev/ttyUSB0"):
         self.driver = Driver(port=port)
-        time.sleep(2)
+        self.movement_engine = ArmMovementEngine()
 
     def close(self):
         self.driver.close()
@@ -57,6 +57,10 @@ class Arm(object):
             position = self.current_position()
             speed = [_adjusted_speed(start_position[i%2], goal_position[i%2], position[i%2]) for i in SERVOS]
             self.set_speed(speed)
+
+    def move_to_point(pt):
+        goal_position = self.movement_engine.convert_point(pt)
+        self.move(goal_position)
 
     def set_speed(self, speed):
         for i in SERVOS:
