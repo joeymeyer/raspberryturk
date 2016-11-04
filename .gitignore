@@ -122,5 +122,11 @@ ENV/
 # Rope project settings
 .ropeproject
 
-### Atom Sync ###
+### Raspberry Turk ###
+# Atom Sync
 .sync-config.cson
+
+# Data
+data/interim/*
+data/processed/*
+data/raw/*
