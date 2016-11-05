@@ -60,7 +60,7 @@ def _get_args():
                 it will keep track of what raw data has been processed so it can be \
                 run multiple times without reprocessing the same data."
         parser = argparse.ArgumentParser(prog=prog, description=desc)
-        parser.add_argument('target_path', type=os.path.abspath,
+        parser.add_argument('source_path', type=os.path.abspath,
                             help="Source path for data processing.")
         parser.add_argument('target_path', type=os.path.abspath,
                             help="Target path for data processing.")
