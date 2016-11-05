@@ -50,9 +50,7 @@ def _process(board, img, target_path):
                 sym = piece.symbol()
             img_name = "{0}-{1}-{2}-{3}.jpg".format(sym, fn, a, rand_addition)
             cv2.imwrite(os.path.join(target_path, 'rgb', img_name), _rotate(sq.raw_img, a))
-            print os.path.join(target_path, 'rgb', img_name)
             cv2.imwrite(os.path.join(target_path, 'grayscale', img_name), _rotate(cv2.cvtColor(sq.raw_img, cv2.COLOR_BGR2GRAY), a))
-            print os.path.join(target_path, 'grayscale', img_name)
 
 def _get_args():
         prog = os.path.relpath(__file__)
