@@ -10,9 +10,9 @@ from random import random
 from raspberryturk.core.vision.chessboard_frame import ChessboardFrame
 from raspberryturk.core.vision.constants import SQUARE_SIZE, BOARD_SIZE
 
-def _create_processed_dir(processed_path):
+def _create_processed_dir(target_path):
     for sub in ['rgb', 'grayscale']:
-        path = os.path.join(processed_path, sub)
+        path = os.path.join(target_path, sub)
         try:
             os.makedirs(path)
         except OSError as exception:
@@ -37,7 +37,7 @@ def _rotate(img, angle):
     M = cv2.getRotationMatrix2D((cols/2,rows/2),angle,1)
     return cv2.warpAffine(img,M,(cols,rows))
 
-def _process(board, img, processed_path):
+def _process(board, img, target_path):
     cf = ChessboardFrame(img)
     for i in range(64):
         piece = board.piece_at(i)
@@ -49,10 +49,10 @@ def _process(board, img, processed_path):
             if piece is not None:
                 sym = piece.symbol()
             img_name = "{0}-{1}-{2}-{3}.jpg".format(sym, fn, a, rand_addition)
-            cv2.imwrite(os.path.join(processed_path, 'rgb', img_name), _rotate(sq.raw_img, a))
-            print os.path.join(processed_path, 'rgb', img_name)
-            cv2.imwrite(os.path.join(processed_path, 'grayscale', img_name), _rotate(cv2.cvtColor(sq.raw_img, cv2.COLOR_BGR2GRAY), a))
-            print os.path.join(processed_path, 'grayscale', img_name)
+            cv2.imwrite(os.path.join(target_path, 'rgb', img_name), _rotate(sq.raw_img, a))
+            print os.path.join(target_path, 'rgb', img_name)
+            cv2.imwrite(os.path.join(target_path, 'grayscale', img_name), _rotate(cv2.cvtColor(sq.raw_img, cv2.COLOR_BGR2GRAY), a))
+            print os.path.join(target_path, 'grayscale', img_name)
 
 def _get_args():
         prog = os.path.relpath(__file__)
@@ -62,28 +62,30 @@ def _get_args():
                 it will keep track of what raw data has been processed so it can be \
                 run multiple times without reprocessing the same data."
         parser = argparse.ArgumentParser(prog=prog, description=desc)
-        parser.add_argument('base_path', type=os.path.abspath,
-                            help="Base path for data processing.")
+        parser.add_argument('target_path', type=os.path.abspath,
+                            help="Source path for data processing.")
+        parser.add_argument('target_path', type=os.path.abspath,
+                            help="Target path for data processing.")
         parser.add_argument('-x', '--ignore_cache', action='store_true', \
-                            help="If True, this will ignore all \
-                                  progress and reprocess everything.")
+                            help="If True, this will delete all contents \
+                                  in the target_path and reprocess everything.")
         return parser.parse_args()
 
 def main():
     args = _get_args()
-    processed_path = os.path.join(args.base_path, 'processed')
+    target_path = args.target_path
     if args.ignore_cache:
-        shutil.rmtree(processed_path)
-    _create_processed_dir(processed_path)
+        shutil.rmtree(target_path)
+    _create_processed_dir(target_path)
     cache = {}
-    cache_path = os.path.join(processed_path, '.processed_cache')
+    cache_path = os.path.join(target_path, '.board_cache')
     if not args.ignore_cache:
         try:
             cache = {k:True for k in [line.strip() for line in open(cache_path)]}
         except IOError:
             pass
-    raw_path = os.path.join(args.base_path, 'raw')
-    seed_dirs = _subdirectories(raw_path)
+    source_path = args.source_path
+    seed_dirs = _subdirectories(source_path)
     for seed_dir in seed_dirs:
         rotation_dirs = _subdirectories(seed_dir)
         for rotation_dir in rotation_dirs:
@@ -92,7 +94,7 @@ def main():
                 board = chess.BaseBoard(board_fen=fen)
                 for img_path in _images(rotation_dir, cache):
                     img = cv2.imread(img_path)
-                    _process(board, img, processed_path)
+                    _process(board, img, target_path)
     with open(cache_path, 'w') as f:
         f.write("\n".join(cache.keys()))
 

@@ -49,7 +49,7 @@ class RandomBoard():
         self.pieces.insert(0, self.pieces.pop())
 
 def _seed_path(base_path, random_board, filename):
-    path_items = [base_path, "raw", str(random_board.seed), str(random_board.rotation)]
+    path_items = [base_path, str(random_board.seed), str(random_board.rotation)]
     if filename is not None:
         path_items.append(filename)
     return os.path.join(*path_items)

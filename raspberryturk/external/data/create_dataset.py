@@ -14,10 +14,10 @@ from raspberryturk.core.data.raw_pixels_extractor import RawPixelsExtractor
 def _should_add_square(encoding_function, symbol, rotation, rotation_degree):
     return encoding_function(symbol) >= 0 and (rotation or (rotation_degree is '0'))
 
-def _load_squares(processed_path, grayscale, rotation, encoding_function, sample):
+def _load_squares(base_path, grayscale, rotation, encoding_function, sample):
     squares = []
     symbols = []
-    imgs_path = os.path.join(processed_path, 'grayscale' if grayscale else 'rgb')
+    imgs_path = os.path.join(base_path, 'grayscale' if grayscale else 'rgb')
     img_names = os.listdir(imgs_path)
     if sample < 1.0:
         shuffle(img_names)
@@ -52,9 +52,9 @@ def _create_labels(encoding_function, symbols, one_hot):
 
 class DatasetCreator(object):
     def __init__(self, base_path, encoding_function, grayscale=True, rotation=False, sample=1.0):
-        self.processed_path = os.path.join(base_path, 'processed')
+        self.base_path = base_path
         self.encoding_function = encoding_function
-        self.squares, self.symbols  = _load_squares(self.processed_path, grayscale, rotation, encoding_function, sample)
+        self.squares, self.symbols  = _load_squares(self.base_path, grayscale, rotation, encoding_function, sample)
 
     def create_dataset(self, feature_extractor, one_hot=False, test_size=0.20, equalize_class_distribution=False, zca_whiten=False):
         features = _create_features(self.squares, feature_extractor)
