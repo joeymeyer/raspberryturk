@@ -76,7 +76,7 @@ def main():
         shutil.rmtree(target_path)
     _create_processed_dir(target_path)
     cache = {}
-    cache_path = os.path.join(target_path, '.board_cache')
+    cache_path = os.path.join(target_path, '.squares_cache')
     if not args.ignore_cache:
         try:
             cache = {k:True for k in [line.strip() for line in open(cache_path)]}
