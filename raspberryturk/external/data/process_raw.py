@@ -7,6 +7,7 @@ import chess
 import hashlib
 import argparse
 from random import random
+from raspberryturk import setup_console_logging
 from raspberryturk.core.vision.chessboard_frame import ChessboardFrame
 from raspberryturk.core.vision.constants import SQUARE_SIZE, BOARD_SIZE
 
@@ -71,6 +72,7 @@ def _get_args():
 
 def main():
     args = _get_args()
+    setup_console_logging()
     target_path = args.target_path
     if args.ignore_cache:
         shutil.rmtree(target_path)

@@ -2,6 +2,7 @@ import numpy as np
 import cv2
 import os
 import argparse
+from raspberryturk import setup_console_logging
 from raspberryturk.core.vision.square import Square
 from raspberryturk.external.data import class_encoding
 from raspberryturk.external.data.dataset import Dataset
@@ -128,6 +129,7 @@ def _get_args():
 
 def main():
     args = _get_args()
+    setup_console_logging()
     dc = DatasetCreator(args.base_path, args.encoding_function, grayscale=args.grayscale, \
                         rotation=args.rotation, sample=args.sample)
     dataset = dc.create_dataset(RawPixelsExtractor(), one_hot=args.one_hot, test_size=args.test_size, \

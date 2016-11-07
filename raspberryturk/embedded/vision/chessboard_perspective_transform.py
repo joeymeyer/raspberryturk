@@ -1,6 +1,6 @@
 import numpy as np
 import logging
-from raspberryturk import lib_path, RaspberryTurkError
+from raspberryturk import lib_path, RaspberryTurkError, setup_console_logging
 
 def _chessboard_perspective_transform_path():
     return lib_path('chessboard_perspective_transform.npy')
@@ -70,6 +70,7 @@ def recalibrate_camera_position():
     np.save(_chessboard_perspective_transform_path(), M)
 
 def main():
+    setup_console_logging()
     logger = logging.getLogger(__name__)
     logger.info("Begin camera position recalibration...")
     try:

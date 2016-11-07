@@ -5,6 +5,7 @@ import argparse
 from time import time
 import chess
 import random
+from raspberryturk import setup_console_logging
 from raspberryturk.core.vision.constants import SQUARE_SIZE, BOARD_SIZE
 from raspberryturk.embedded.vision.chess_camera import ChessCamera
 
@@ -80,6 +81,7 @@ def _get_args():
 
 def main():
     args = _get_args()
+    setup_console_logging()
     rb = RandomBoard(seed=args.seed)
     _create_collection_folder(args.base_path, rb)
     end = False
