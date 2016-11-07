@@ -9,6 +9,11 @@ setup(name='raspberryturk',
       author_email='jmeyer41@gmail.com',
       url='https://bitbucket.com/joeymeyer/raspberryturk',
       packages=find_packages(),
+      entry_points={
+          'console_scripts': [
+              'raspberryturkd = raspberryturk.embedded.raspberryturkd:main'
+          ]
+      },
       classifiers=[
         'Development Status :: 2 - Pre-Alpha',
         'Intended Audience :: Developers',

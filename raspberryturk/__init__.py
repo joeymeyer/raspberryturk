@@ -1,8 +1,7 @@
 import os
-from logging.config import fileConfig
+import logging
+import time
 from socket import gethostname
-base_path = os.path.dirname(os.path.realpath(__file__))
-fileConfig(os.path.join(base_path, 'logging.ini'))
 
 app_directory = 'raspberryturk'
 
@@ -24,18 +23,35 @@ def games_path(*paths):
 def opt_path(*paths):
     return _var_subdir('opt', *paths)
 
+def run_path(*paths):
+    return _var_subdir('run', *paths)
+
+def log_path(*paths):
+    return _var_subdir('log', *paths)
+
 class RaspberryTurkError(Exception):
     pass
 
 def is_running_on_raspberryturk():
     return gethostname() == 'raspberryturk'
 
-if is_running_on_raspberryturk():
-    def _safe_makedirs(path):
-        try:
-            os.makedirs(path)
-        except OSError as e:
-            if e.errno != 17:
-                raise e
-    dirs = [cache_path(), lib_path(), games_path(), opt_path()]
-    [_safe_makedirs(d) for d in dirs]
+LOGGING_FORMAT = "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+
+def setup_console_logging(level=logging.INFO):
+    logging.basicConfig(format=LOGGING_FORMAT, level=level)
+
+def setup_file_logging(level=logging.DEBUG):
+    timestamp = str(int(time.time()))
+    fn = os.extsep.join(["raspberryturk-{}".format(timestamp), 'log'])
+    path = log_path(fn)
+    logging.basicConfig(format=LOGGING_FORMAT, level=level, filename=path, filemode='w')
+
+def active_log_stream():
+    try:
+        h = logging.root.handlers[0]
+        return h.stream
+    except IndexError:
+        raise RaspberryTurkError("Logging not setup.")
+
+def active_log_path():
+    return active_log_stream().name
