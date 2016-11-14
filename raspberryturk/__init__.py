@@ -1,5 +1,6 @@
 import os
 import logging
+from logging.handlers import RotatingFileHandler
 import time
 from socket import gethostname
 
@@ -41,10 +42,13 @@ def setup_console_logging(level=logging.INFO):
     logging.basicConfig(format=LOGGING_FORMAT, level=level)
 
 def setup_file_logging(level=logging.DEBUG):
-    timestamp = str(int(time.time()))
-    fn = os.extsep.join(["raspberryturk-{}".format(timestamp), 'log'])
-    path = log_path(fn)
-    logging.basicConfig(format=LOGGING_FORMAT, level=level, filename=path, filemode='w')
+    path = log_path(os.extsep.join(['raspberryturk', 'log']))
+    handler = RotatingFileHandler(path, mode='a', maxBytes=64*1024*1024,
+                                  backupCount=5, encoding=None, delay=0)
+    handler.setFormatter(logging.Formatter(LOGGING_FORMAT))
+    handler.setLevel(level)
+    logging.root.setLevel(level)
+    logging.root.addHandler(handler)
 
 def active_log_stream():
     try:
