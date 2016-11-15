@@ -4,11 +4,10 @@ import os
 import argparse
 from raspberryturk import setup_console_logging
 from raspberryturk.core.vision.square import Square
-from raspberryturk.external.data import class_encoding
-from raspberryturk.external.data.dataset import Dataset
+from raspberryturk.core.data import class_encoding
+from raspberryturk.core.data.dataset import Dataset
 from tqdm import tqdm
 from random import shuffle
-from class_encoding import ENCODING_FUNCTIONS
 from sklearn.model_selection import train_test_split
 from raspberryturk.core.data.raw_pixels_extractor import RawPixelsExtractor
 
