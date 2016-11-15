@@ -4,6 +4,10 @@ from logging.handlers import RotatingFileHandler
 import time
 from socket import gethostname
 
+__author__ = 'Joey Meyer'
+__email__ = 'jmeyer41@gmail.com'
+__version__ = '0.0.1-beta'
+
 app_directory = 'raspberryturk'
 
 def _root():

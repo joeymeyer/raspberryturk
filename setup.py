@@ -1,17 +1,18 @@
 #!/usr/bin/env python
 
 from setuptools import setup, find_packages
+import raspberryturk
 
 setup(name='raspberryturk',
-      version='0.0.1',
+      version=raspberryturk.__version__,
       description='Python package powering the Raspberry Turk chess-playing robot.',
-      author='Joey Meyer',
-      author_email='jmeyer41@gmail.com',
+      author=raspberryturk.__author__,
+      author_email=raspberryturk.__email__,
       url='https://bitbucket.com/joeymeyer/raspberryturk',
       packages=find_packages(),
       entry_points={
           'console_scripts': [
-              'raspberryturkd = raspberryturk.embedded.raspberryturkd:main'
+              'raspberryturk = raspberryturk.__main__:main'
           ]
       },
       classifiers=[
