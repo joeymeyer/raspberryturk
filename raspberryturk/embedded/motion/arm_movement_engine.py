@@ -10,14 +10,13 @@ def _load_tree(logger):
 
     cached_tree_path = cache_path('arm_movement_engine.kdtree')
     try:
-        with open(cache_path('arm_movement_engine.kdtree'), 'rb') as f:
+        with open(cached_tree_path, 'rb') as f:
             logger.info("Attemptimg to load kd-tree from cache...")
             tree = pickle.load(f)
             logger.info("Successfully loaded kd-tree from cache.")
     except (OSError, IOError):
         logger.info("Failed to load kd-tree from {}".format(cached_tree_path))
 
-    needs_to_write_cache = False
     if tree is None:
         try:
             pts_path = opt_path('arm_movement_engine_pts.npy')
@@ -30,15 +29,14 @@ def _load_tree(logger):
                 needs_to_write_cache = True
         except IOError:
             raise RaspberryTurkError("Arm movement engine can't find required file: {}".format(pts_path))
-
-    if needs_to_write_cache:
-        try:
-            with open(cached_tree_path, 'wb') as f:
-                logger.info("Writing kd-tree to cache...")
-                pickle.dump(tree, f)
-                logger.info("Done writing kd-tree to cache.")
-        except (OSError, IOError) as e:
-            logger.warn("Failed to write kdtree to {}. Reason: {}.".format(cached_tree_path, e))
+        else:
+            try:
+                with open(cached_tree_path, 'wb') as f:
+                    logger.info("Writing kd-tree to cache...")
+                    pickle.dump(tree, f)
+                    logger.info("Done writing kd-tree to cache.")
+            except (OSError, IOError) as e:
+                logger.warn("Failed to write kdtree to {}. Reason: {}.".format(cached_tree_path, e))
 
     return tree
 
