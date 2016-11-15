@@ -1,6 +1,6 @@
 import os
 import chess
-from raspberryturk.embedded.chess import game
+from raspberryturk.embedded import game
 from raspberryturk import games_path
 
 def setup():
