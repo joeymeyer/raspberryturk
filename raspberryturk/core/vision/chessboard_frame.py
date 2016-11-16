@@ -7,6 +7,6 @@ class ChessboardFrame():
         self.img = img
 
     def square_at(self, i):
-        x = BOARD_SIZE - (((i / 8) % 8) * SQUARE_SIZE) - SQUARE_SIZE
+        x = ((i / 8) % 8) * SQUARE_SIZE
         y = (i % 8) * SQUARE_SIZE
         return Square(i, self.img[x:x+SQUARE_SIZE, y:y+SQUARE_SIZE, :])

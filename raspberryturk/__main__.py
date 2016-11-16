@@ -2,6 +2,7 @@
 
 import argparse
 import os
+import io
 import raspberryturk
 
 def _raspberryturkd(subcommand):
@@ -23,9 +24,8 @@ def _status(args):
         command = "watch -d -t -n 0.5 cat {}".format(path)
         os.system(command)
     else:
-        with open(path, 'r') as f:
+        with io.open(path, 'r', encoding='utf8') as f:
             print f.read()
-
 
 def _get_args():
     desc = "Utility for starting and stopping the raspberryturk daemon (raspberryturkd)."
