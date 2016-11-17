@@ -3,12 +3,12 @@ import chess
 from raspberryturk.core.vision.chessboard_frame import ChessboardFrame
 from raspberryturk.core.vision.constants import BOARD_SIZE, SQUARE_SIZE
 from raspberryturk.embedded.vision.chessboard_perspective_transform import get_chessboard_perspective_transform
-from raspberryturk.embedded.vision.square_presence_detector import SquarePresenceDetector
+from raspberryturk.embedded.vision.square_color_detector import SquareColorDetector
 
 class ChessCamera(object):
     def __init__(self):
         self._capture = cv2.VideoCapture(0)
-        self._piece_detector = SquarePresenceDetector()
+        self._color_detector = SquareColorDetector()
 
     def current_chessboard_frame(self):
         _, frame = self._capture.read()
@@ -19,11 +19,10 @@ class ChessCamera(object):
         flipped_img = cv2.flip(img, -1)
         return ChessboardFrame(flipped_img)
 
-    def current_square_set(self):
+    def current_colored_board_mask(self):
         cbf = self.current_chessboard_frame()
-        ss = chess.SquareSet()
+        cbm = [None] * 64
         for i in range(64):
             sq = cbf.square_at(i)
-            if self._piece_detector.detect(sq):
-                ss.update(chess.SquareSet.from_square(i))
-        return ss
+            cbm[i] = self._color_detector.detect(sq)
+        return cbm

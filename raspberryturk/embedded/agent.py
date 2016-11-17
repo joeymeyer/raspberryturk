@@ -1,5 +1,6 @@
 from raspberryturk import lib_path
-from raspberryturk.core.vision.helpers import possible_moves_for_board
+from raspberryturk.core.vision.helpers import possible_moves_for_board, \
+                                              pawn_board_from_colored_board_mask
 from raspberryturk.core.game.player import Player
 from raspberryturk.embedded import game
 from raspberryturk.embedded.vision.chess_camera import ChessCamera
@@ -18,9 +19,9 @@ class Agent(object):
         self._player = Player()
 
     def _candidate_move(self):
-        ss = self._chess_camera.current_square_set()
+        cbm = self._chess_camera.current_colored_board_mask()
         b = game.get_board()
-        moves = possible_moves_for_board(b, ss)
+        moves = possible_moves_for_board(b, cbm)
         return moves[0] if moves else None
 
     def _next_move(self):
@@ -32,9 +33,10 @@ class Agent(object):
 
     def _write_status(self):
         b = game.get_board()
-        ss = self._chess_camera.current_square_set()
+        cbm = self._chess_camera.current_colored_board_mask()
+        cbm_board = pawn_board_from_colored_board_mask(cbm)
         pgn = game.pgn()
-        text = unicode("\n\n").join([str(ss), unicode(b), pgn])
+        text = unicode("\n\n").join([unicode(cbm_board), unicode(b), pgn])
         with io.open(lib_path('status.txt'), 'w', encoding='utf8') as f:
             f.write(text)
 
