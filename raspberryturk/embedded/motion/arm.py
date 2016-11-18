@@ -58,7 +58,7 @@ class Arm(object):
             speed = [_adjusted_speed(start_position[i%2], goal_position[i%2], position[i%2]) for i in SERVOS]
             self.set_speed(speed)
 
-    def move_to_point(pt):
+    def move_to_point(self, pt):
         goal_position = self.movement_engine.convert_point(pt)
         self.move(goal_position)
 
