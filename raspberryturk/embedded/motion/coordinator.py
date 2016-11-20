@@ -5,15 +5,6 @@ import time
 from raspberryturk.embedded.motion.gripper import Gripper
 from raspberryturk.embedded.motion.arm import Arm
 
-PIECE_HEIGHTS = {
-    chess.KING: 41,
-    chess.QUEEN: 33,
-    chess.ROOK: 20,
-    chess.BISHOP: 27,
-    chess.KNIGHT: 23,
-    chess.PAWN: 18
-}
-
 def _castling(move, board):
     return move.from_square in [chess.E1, chess.E8] \
            and move.to_square in [chess.C1, chess.G1, chess.C8, chess.G8] \
@@ -40,16 +31,16 @@ class Coordinator(object):
             rook_to_sq = chess.square(to_file_index, rank_index)
             self._execute_move(_sq_to_pt(rook_from_sq), \
                                _sq_to_pt(rook_to_sq), \
-                               PIECE_HEIGHTS[piece.piece_type])
+                               piece.piece_type)
         else:
             captured_piece = board.piece_at(move.to_square)
             if captured_piece is not None:
                 self._execute_move(_sq_to_pt(move.to_square), [20, 13.5], \
-                                   PIECE_HEIGHTS[captured_piece.piece_type])
+                                   captured_piece.piece_type)
         piece = board.piece_at(move.from_square)
         self._execute_move(_sq_to_pt(move.from_square), \
                            _sq_to_pt(move.to_square), \
-                           PIECE_HEIGHTS[piece.piece_type])
+                           piece.piece_type)
 
     def _execute_move(self, origin, destination, height):
         self._logger.info("Moving piece of height {} at {} to {}...".format(height, origin, destination))

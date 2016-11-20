@@ -4,6 +4,18 @@ from time import sleep
 electromagnet_pin = 40
 servo_pin = 38
 
+PIECE_HEIGHTS = {
+    chess.KING: 41,
+    chess.QUEEN: 33,
+    chess.ROOK: 20,
+    chess.BISHOP: 27,
+    chess.KNIGHT: 23,
+    chess.PAWN: 18
+}
+
+MAX_PIECE_HEIGHT = max(PIECE_HEIGHTS.values())
+RESTING_HEIGHT = MAX_PIECE_HEIGHT + 4
+
 class Gripper(object):
     def __init__(self):
         self.previous_z = None
@@ -12,7 +24,7 @@ class Gripper(object):
         GPIO.setup(electromagnet_pin, GPIO.OUT)
 
     def calibrate(self):
-        self.move(100)
+        self.move(RESTING_HEIGHT)
 
     def move(self, z):
         z = max(0.0, min(z, 100.0))
@@ -32,19 +44,21 @@ class Gripper(object):
         output = GPIO.HIGH if on else GPIO.LOW
         GPIO.output(electromagnet_pin, output)
 
-    def pickup(self, z):
-        self.move(z)
+    def pickup(self, piece_type):
+        piece_height = PIECE_HEIGHTS[piece_type]
+        self.move(piece_height)
         sleep(0.4)
         self.electromagnet(True)
         sleep(0.2)
-        self.move(100)
+        self.move(RESTING_HEIGHT + piece_height)
 
-    def dropoff(self, z):
-        self.move(z)
+    def dropoff(self, piece_type):
+        piece_height = PIECE_HEIGHTS[piece_type]
+        self.move(piece_type)
         sleep(0.2)
         self.electromagnet(False)
         sleep(0.4)
-        self.move(100)
+        self.move(RESTING_HEIGHT)
 
     def cleanup(self):
         GPIO.cleanup()
