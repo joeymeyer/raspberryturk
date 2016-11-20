@@ -46,7 +46,7 @@ class Arm(object):
         self.move((512, 512))
 
     def return_to_rest(self):
-        self.move(RESTING_POSITION)
+        self.move_to_point([20, 13.5])
 
     def move(self, goal_position):
         start_position = self.current_position()

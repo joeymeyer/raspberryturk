@@ -20,9 +20,9 @@ class RaspberryTurkDaemon(object):
         self.logger = logging.getLogger(__name__)
         self.logger.info("Starting RaspberryTurkDaemon.")
         time.sleep(1)
-        self.agent = Agent()
-        while self._interrupt_signum is None:
-            self.agent.perception_action_sequence()
+        with Agent() as a:
+            while self._interrupt_signum is None:
+                a.perception_action_sequence()
         self.logger.warn("Received signal {}.".format(self._interrupt_signum))
         self.logger.info("Stopping RaspberryTurkDaemon.")
 

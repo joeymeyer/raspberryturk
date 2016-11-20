@@ -4,6 +4,7 @@ from raspberryturk.core.vision.helpers import possible_moves_for_board, \
 from raspberryturk.core.game.player import Player
 from raspberryturk.embedded import game
 from raspberryturk.embedded.vision.chess_camera import ChessCamera
+from raspberryturk.embedded.motion.coordinator import Coordinator
 
 import io
 import chess
@@ -15,8 +16,19 @@ NUM_REQUIRED_MATCHING_CANDIDATES = 2
 class Agent(object):
     def __init__(self):
         self._chess_camera = ChessCamera()
+        self._motion_coordinator = None
         self._logger = logging.getLogger(__name__)
         self._player = Player()
+
+    def __enter__(self):
+        self._motion_coordinator = Coordinator()
+        self._motion_coordinator.reset()
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        self._motion_coordinator.close()
+        self._motion_coordinator = None
+        return False
 
     def _candidate_move(self):
         cbm = self._chess_camera.current_colored_board_mask()
@@ -51,6 +63,6 @@ class Agent(object):
                 game.apply_move(m)
         else:
             m = self._player.select_move(b)
-            # Make move with robot arm
+            self._motion_coordinator.move_piece(m, b)
             game.apply_move(m)
         self._write_status()
