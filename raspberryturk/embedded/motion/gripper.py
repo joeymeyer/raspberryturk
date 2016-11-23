@@ -1,5 +1,6 @@
 import RPi.GPIO as GPIO
 from time import sleep
+import chess
 
 electromagnet_pin = 40
 servo_pin = 38
