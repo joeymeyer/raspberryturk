@@ -38,20 +38,28 @@ def _rotate(img, angle):
     M = cv2.getRotationMatrix2D((cols/2,rows/2),angle,1)
     return cv2.warpAffine(img,M,(cols,rows))
 
+def _save_image(fn, img):
+    try:
+        os.makedirs(os.path.dirname(fn))
+    except OSError as e:
+        if e.errno != 17:
+            raise e
+    cv2.imwrite(fn, img)
+
 def _process(board, img, target_path):
     cf = ChessboardFrame(img)
     for i in range(64):
         piece = board.piece_at(i)
         fn = chess.SQUARE_NAMES[i]
         sq = cf.square_at(i)
-        rand_addition = hashlib.sha1(str(random())).hexdigest()[0:8]
+        rand_addition = hashlib.sha1(str(random())).hexdigest()[0:24]
         for a in range(0, 360, 90):
-            sym = 'e'
-            if piece is not None:
-                sym = piece.symbol()
-            img_name = "{0}-{1}-{2}-{3}.jpg".format(sym, fn, a, rand_addition)
-            cv2.imwrite(os.path.join(target_path, 'rgb', img_name), _rotate(sq.raw_img, a))
-            cv2.imwrite(os.path.join(target_path, 'grayscale', img_name), _rotate(cv2.cvtColor(sq.raw_img, cv2.COLOR_BGR2GRAY), a))
+            sym = piece.symbol() if piece is not None else 'e'
+            img_name = os.extsep.join([rand_addition, 'jpg'])
+            rgb_path = os.path.join(target_path, 'rgb', sym, fn, str(a), img_name)
+            _save_image(rgb_path, _rotate(sq.raw_img, a))
+            grayscale_path = os.path.join(target_path, 'grayscale', sym, fn, str(a), img_name)
+            _save_image(grayscale_path, _rotate(cv2.cvtColor(sq.raw_img, cv2.COLOR_BGR2GRAY), a))
 
 def _get_args():
         prog = os.path.relpath(__file__)
