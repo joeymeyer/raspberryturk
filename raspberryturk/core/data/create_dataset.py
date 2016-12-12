@@ -15,25 +15,33 @@ def _should_add_square(encoding_function, symbol, rotation, rotation_degree):
     return encoding_function(symbol) >= 0 and (rotation or (rotation_degree is '0'))
 
 def _load_squares(base_path, grayscale, rotation, encoding_function, sample):
+    square_files = []
+    path = os.path.join(base_path, 'grayscale' if grayscale else 'rgb')
+    for root, dirs, files in os.walk(path):
+        subpath = root[len(path):]
+        components = subpath.split(os.sep)
+        if len(components) == 4:
+            _, sym, position, angle = components
+            for fn in files:
+                _, ext = os.path.splitext(os.path.basename(fn))
+                if ext.lower().endswith(('.png', '.jpg', '.jpeg')):
+                    sq_path = os.path.join(root, fn)
+                    square_files.append((sq_path, sym, position, angle))
+    if sample < 1.0:
+        shuffle(square_files)
+        sample_index = int(sample*len(square_files))
+        square_files = square_files[:sample_index]
+
     squares = []
     symbols = []
-    imgs_path = os.path.join(base_path, 'grayscale' if grayscale else 'rgb')
-    img_names = os.listdir(imgs_path)
-    if sample < 1.0:
-        shuffle(img_names)
-        sample_index = int(sample*len(img_names))
-        img_names = img_names[:sample_index]
-    for img_name in tqdm(img_names):
-        fn, ext = os.path.splitext(os.path.basename(img_name))
-        if ext.lower().endswith(('.png', '.jpg', '.jpeg')):
-            symbol, position, rotation_degree, _ = fn.split("-")
-            if grayscale:
-                symbol = symbol.lower()
-            if _should_add_square(encoding_function, symbol, rotation, rotation_degree):
-                raw_img = cv2.imread(os.path.join(imgs_path, img_name), 0 if grayscale else 1)
-                sq = Square(position, raw_img)
-                squares.append(sq)
-                symbols.append(symbol)
+    for fn, sym, position, angle in square_files:
+        if grayscale:
+            sym = sym.lower()
+        if _should_add_square(encoding_function, sym, rotation, angle):
+            raw_img = cv2.imread(fn, 0 if grayscale else 1)
+            sq = Square(position, raw_img)
+            squares.append(sq)
+            symbols.append(sym)
     return squares, symbols
 
 def _create_features(squares, feature_extractor):
