@@ -1,8 +1,12 @@
 import random
+from chess import uci
 
 class Player(object):
     def __init__(self):
-        pass
+        self._engine = uci.popen_engine('stockfish')
+        self._engine.uci()
 
-    def select_move(self, board):
-        return random.choice(list(board.legal_moves))
+    def select_move(self, board, movetime=1000):
+        self._engine.position(board)
+        result = self._engine.go(movetime=movetime)
+        return result.bestmove
