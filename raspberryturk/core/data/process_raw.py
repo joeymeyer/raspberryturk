@@ -64,8 +64,8 @@ def _process(board, img, target_path):
 def _get_args():
         prog = os.path.relpath(__file__)
         desc = "Utility used to process raw chessboard image data collected by collection.py. \
-                It goes through the contents of BASE_PATH/raw, processes the collected \
-                data, and stores the processed format in BASE_PATH/processed. By default \
+                It goes through the contents of SOURCE_PATH, processes the collected \
+                data, and stores the interim format in TARGET_PATH. By default \
                 it will keep track of what raw data has been processed so it can be \
                 run multiple times without reprocessing the same data."
         parser = argparse.ArgumentParser(prog=prog, description=desc)
