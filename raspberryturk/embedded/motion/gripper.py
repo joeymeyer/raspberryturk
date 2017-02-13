@@ -7,15 +7,15 @@ servo_pin = 38
 
 PIECE_HEIGHTS = {
     chess.KING: 41,
-    chess.QUEEN: 33,
+    chess.QUEEN: 34,
     chess.ROOK: 20,
-    chess.BISHOP: 27,
-    chess.KNIGHT: 23,
-    chess.PAWN: 18
+    chess.BISHOP: 28,
+    chess.KNIGHT: 24,
+    chess.PAWN: 19
 }
 
 MAX_PIECE_HEIGHT = max(PIECE_HEIGHTS.values())
-RESTING_HEIGHT = MAX_PIECE_HEIGHT + 4
+RESTING_HEIGHT = MAX_PIECE_HEIGHT + 15
 
 class Gripper(object):
     def __init__(self):
