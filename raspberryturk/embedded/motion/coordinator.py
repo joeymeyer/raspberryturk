@@ -42,13 +42,13 @@ class Coordinator(object):
                            _sq_to_pt(move.to_square), \
                            piece.piece_type)
 
-    def _execute_move(self, origin, destination, height):
-        self._logger.info("Moving piece of height {} at {} to {}...".format(height, origin, destination))
+    def _execute_move(self, origin, destination, piece_type):
+        self._logger.info("Moving piece {} at {} to {}...".format(piece_type, origin, destination))
         t0 = time.time()
         self.arm.move_to_point(origin)
-        self.gripper.pickup(height)
+        self.gripper.pickup(piece_type)
         self.arm.move_to_point(destination)
-        self.gripper.dropoff(height)
+        self.gripper.dropoff(piece_type)
         self.arm.return_to_rest()
         elapsed_time = time.time() - t0
         self._logger.info("Done moving piece (elapsed time: {}s).".format(elapsed_time))

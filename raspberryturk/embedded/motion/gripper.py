@@ -55,7 +55,7 @@ class Gripper(object):
 
     def dropoff(self, piece_type):
         piece_height = PIECE_HEIGHTS[piece_type]
-        self.move(piece_type)
+        self.move(piece_height)
         sleep(0.2)
         self.electromagnet(False)
         sleep(0.4)
