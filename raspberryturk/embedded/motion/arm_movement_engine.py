@@ -48,4 +48,5 @@ class ArmMovementEngine(object):
     def convert_point(self, pt):
         pt = np.array(pt).reshape(-1, 2)
         index = self._tree.query(pt, return_distance=False).ravel()[0]
-        return np.array([index/1024, index%1024])
+        calibrated_offset = 75
+        return np.array([index/1024+calibrated_offset, index%1024])
