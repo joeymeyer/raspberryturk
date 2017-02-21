@@ -16,8 +16,7 @@ class ChessCamera(object):
         M = get_chessboard_perspective_transform()
         bgr_img = cv2.warpPerspective(frame, M, (BOARD_SIZE,BOARD_SIZE))
         img = cv2.cvtColor(bgr_img, cv2.COLOR_BGR2RGB)
-        flipped_img = cv2.flip(img, -1)
-        return ChessboardFrame(flipped_img)
+        return ChessboardFrame(img)
 
     def current_colored_board_mask(self):
         cbf = self.current_chessboard_frame()
