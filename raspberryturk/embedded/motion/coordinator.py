@@ -8,8 +8,7 @@ from raspberryturk.embedded.motion.arm import Arm
 def _castling(move, board):
     return move.from_square in [chess.E1, chess.E8] \
            and move.to_square in [chess.C1, chess.G1, chess.C8, chess.G8] \
-           and self.piece_type_at(move.from_square) == KING \
-           and self.piece_type_at(move.to_square) != ROOK
+           and board.piece_at(move.from_square).piece_type == chess.KING
 
 def _sq_to_pt(sq):
     i = 63 - sq
