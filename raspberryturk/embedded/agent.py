@@ -48,7 +48,8 @@ class Agent(object):
         cbm = self._chess_camera.current_colored_board_mask()
         cbm_board = pawn_board_from_colored_board_mask(cbm)
         pgn = game.pgn()
-        text = unicode("\n\n").join([unicode(cbm_board), unicode(b), pgn])
+        formatted_datetime = time.strftime("%x %X")
+        text = unicode("\n\n").join([formatted_datetime, unicode(cbm_board), unicode(b), pgn])
         with io.open(lib_path('status.txt'), 'w', encoding='utf8') as f:
             f.write(text)
 
