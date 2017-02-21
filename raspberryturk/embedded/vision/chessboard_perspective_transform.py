@@ -63,8 +63,10 @@ def recalibrate_camera_position():
     P.append(predict(4.0, 4.0))
     Q.append((480.0, 480.0))
 
-    P = np.array(P, np.float32)
     Q = np.array(Q, np.float32)
+    P = np.array(P, np.float32).reshape(Q.shape)
+    ind = np.lexsort((P[:,1],P[:,0]))
+    P = P[ind]
 
     M = cv2.getPerspectiveTransform(P, Q)
     np.save(_chessboard_perspective_transform_path(), M)
