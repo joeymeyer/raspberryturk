@@ -30,7 +30,7 @@ class Coordinator(object):
             rook_to_sq = chess.square(to_file_index, rank_index)
             self._execute_move(_sq_to_pt(rook_from_sq), \
                                _sq_to_pt(rook_to_sq), \
-                               piece.piece_type)
+                               chess.ROOK)
         else:
             captured_piece = board.piece_at(move.to_square)
             if captured_piece is not None:
