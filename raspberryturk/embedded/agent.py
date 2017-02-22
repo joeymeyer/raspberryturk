@@ -1,7 +1,7 @@
 from raspberryturk import lib_path
 from raspberryturk.core.vision.helpers import possible_moves_for_board, \
                                               pawn_board_from_colored_board_mask
-from raspberryturk.core.game.player import Player
+from raspberryturk.core.game.stockfish_player import StockfishPlayer
 from raspberryturk.embedded import game
 from raspberryturk.embedded.vision.chess_camera import ChessCamera
 from raspberryturk.embedded.motion.coordinator import Coordinator
@@ -18,7 +18,7 @@ class Agent(object):
         self._chess_camera = ChessCamera()
         self._motion_coordinator = None
         self._logger = logging.getLogger(__name__)
-        self._player = Player()
+        self._player = StockfishPlayer()
 
     def __enter__(self):
         self._motion_coordinator = Coordinator()
