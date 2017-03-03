@@ -1,12 +1,13 @@
 import numpy as np
 
 class Dataset(object):
-    def __init__(self, X_train, X_val, y_train, y_val, zca=None):
+    def __init__(self, X_train, X_val, y_train, y_val, zca=None, metadata=""):
         self.X_train = X_train
         self.X_val = X_val
         self.y_train = y_train
         self.y_val = y_val
         self.zca = zca
+        self.metadata = metadata
 
     def save_file(self, filename):
         with open(filename, 'w') as f:
@@ -14,7 +15,8 @@ class Dataset(object):
                         X_val=self.X_val,
                         y_train=self.y_train,
                         y_val=self.y_val,
-                        zca=self.zca)
+                        zca=self.zca,
+                        metadata=self.metadata)
 
     @classmethod
     def load_file(cls, filename):
@@ -29,4 +31,9 @@ class Dataset(object):
                 zca = data['zca']
             except KeyError:
                 pass
-            return cls(X_train, X_val, y_train, y_val, zca=zca)
+            metadata = None
+            try:
+                metadata = data['metadata']
+            except KeyError:
+                pass
+            return cls(X_train, X_val, y_train, y_val, zca=zca, metadata=metadata)

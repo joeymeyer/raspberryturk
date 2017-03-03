@@ -2,6 +2,7 @@ import numpy as np
 import cv2
 import os
 import argparse
+import json
 from raspberryturk import setup_console_logging
 from raspberryturk.core.vision.square import Square
 from raspberryturk.core.data import class_encoding
@@ -64,7 +65,7 @@ class DatasetCreator(object):
         self.encoding_function = encoding_function
         self.squares, self.symbols  = _load_squares(self.base_path, grayscale, rotation, encoding_function, sample)
 
-    def create_dataset(self, feature_extractor, one_hot=False, test_size=0.20, equalize_class_distribution=False, zca_whiten=False):
+    def create_dataset(self, feature_extractor, one_hot=False, test_size=0.20, equalize_class_distribution=False, zca_whiten=False, metadata=""):
         features = _create_features(self.squares, feature_extractor)
         labels = _create_labels(self.encoding_function, self.symbols, one_hot=one_hot)
 
@@ -90,7 +91,7 @@ class DatasetCreator(object):
             X_train = np.dot(X_train, zca)
             X_val = np.dot(X_val, zca)
 
-        return Dataset(X_train, X_val, y_train, y_val, zca=zca)
+        return Dataset(X_train, X_val, y_train, y_val, zca=zca, metadata=metadata)
 
 class _ClassEncodingAction(argparse.Action):
     def __call__(self, parser, namespace, values, option_string=None):
@@ -133,6 +134,9 @@ def _get_args():
                         help="ZCA whiten dataset.")
     return parser.parse_args()
 
+def _json_args(args):
+    dict_args = {k: v.__name__ if callable(v) else v for k,v in vars(args).items()}
+    return json.dumps(dict_args, indent=2, sort_keys=True)
 
 def main():
     args = _get_args()
@@ -140,7 +144,7 @@ def main():
     dc = DatasetCreator(args.base_path, args.encoding_function, grayscale=args.grayscale, \
                         rotation=args.rotation, sample=args.sample)
     dataset = dc.create_dataset(RawPixelsExtractor(), one_hot=args.one_hot, test_size=args.test_size, \
-                      equalize_class_distribution=args.equalize_classes, zca_whiten=args.zca)
+                      equalize_class_distribution=args.equalize_classes, zca_whiten=args.zca, metadata=_json_args(args))
     dataset.save_file(args.filename)
 
 if __name__ == '__main__':
