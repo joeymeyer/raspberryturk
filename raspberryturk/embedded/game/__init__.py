@@ -1,7 +1,7 @@
 import os
 import logging
 import chess
-from time import time
+import time
 from raspberryturk import games_path
 from chess.pgn import read_game, Game, FileExporter
 
@@ -29,11 +29,15 @@ def is_temporary():
     return base == TEMPORARY_GAME_PATH
 
 def start_new_game(temporary=False):
-    base = 'tmp' if temporary else str(int(time()))
+    base = 'tmp' if temporary else str(int(time.time()))
     fn = os.path.extsep.join([base, 'pgn'])
     path = games_path(fn)
     _logger().info("Starting new game '{}'...".format(path))
-    _save_game(Game(), path)
+    game = Game()
+    game.headers["Date"] = time.strftime("%Y.%m.%d")
+    game.headers["White"] = "Human"
+    game.headers["Black"] = "Raspberry Turk"
+    _save_game(game, path)
     enter_game(fn)
 
 def enter_game(fn):
@@ -56,6 +60,8 @@ def apply_move(move, comment=''):
     b = g.end().board()
     assert move in b.legal_moves, "{0} is not a legal move for board {1}".format(move.uci(), b.fen())
     g.end().add_main_variation(move, comment=comment)
+    b.push(move)
+    g.headers["Result"] = b.result()
     _save_game(g)
     _logger().info("Applied move {}.".format(move.uci()))
 
