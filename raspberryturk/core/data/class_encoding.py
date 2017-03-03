@@ -5,6 +5,7 @@ _COLOR_PIECE_SYMBOLS = _symbols_dict(['p', 'n', 'b', 'r', 'q', 'k', 'P', 'N', 'B
 _COLOR_PIECE_SYMBOLS_NOEMPTY = _symbols_dict(['p', 'n', 'b', 'r', 'q', 'k', 'P', 'N', 'B', 'R', 'Q', 'K'])
 _PIECE_SYMBOLS = _symbols_dict(['p', 'n', 'b', 'r', 'q', 'k', None])
 _PIECE_SYMBOLS_NOEMPTY = _symbols_dict(['p', 'n', 'b', 'r', 'q', 'k'])
+_PROMOTABLE_PIECE_SYMBOLS = _symbols_dict(['n', 'b', 'r', 'q'])
 
 def _is_empty(piece_symbol):
     return piece_symbol == 'e' or piece_symbol is None
@@ -57,4 +58,8 @@ def piece(piece_symbol):
 def piece_noempty(piece_symbol):
     return _dict_lookup(_PIECE_SYMBOLS_NOEMPTY, piece_symbol)
 
-ENCODING_FUNCTIONS = [empty_or_not, white_or_black, color_piece, color_piece_noempty, piece, piece_noempty]
+@_num_classes(len(_PROMOTABLE_PIECE_SYMBOLS.keys()))
+def promotable_piece(piece_symbol):
+    return _dict_lookup(_PROMOTABLE_PIECE_SYMBOLS, piece_symbol)
+
+ENCODING_FUNCTIONS = [empty_or_not, white_or_black, color_piece, color_piece_noempty, piece, piece_noempty, promotable_piece]
