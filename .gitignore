@@ -125,8 +125,3 @@ ENV/
 ### Raspberry Turk ###
 # Atom Sync
 .sync-config.cson
-
-# Data
-data/interim/*
-data/processed/*
-data/raw/*
