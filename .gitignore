@@ -125,3 +125,6 @@ ENV/
 ### Raspberry Turk ###
 # Atom Sync
 .sync-config.cson
+
+# IDEA settings
+.idea

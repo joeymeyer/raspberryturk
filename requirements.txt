@@ -1,0 +1,11 @@
+mkl
+numpy
+readline
+scikit-learn
+scipy
+tbb
+tk
+matplotlib
+
+opencv-python
+python-chess
