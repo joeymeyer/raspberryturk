@@ -10,30 +10,32 @@ class Dataset(object):
         self.metadata = metadata
 
     def save_file(self, filename):
-        with open(filename, 'w') as f:
-            np.savez(f, X_train=self.X_train,
-                        X_val=self.X_val,
-                        y_train=self.y_train,
-                        y_val=self.y_val,
-                        zca=self.zca,
-                        metadata=self.metadata)
+        np.savez(filename,
+                 X_train=self.X_train,
+                 X_val=self.X_val,
+                 y_train=self.y_train,
+                 y_val=self.y_val,
+                 zca=self.zca,
+                 metadata=self.metadata,
+                 )
 
     @classmethod
     def load_file(cls, filename):
-        with open(filename, 'r') as f:
-            data = np.load(f)
-            X_train = data['X_train']
-            X_val = data['X_val']
-            y_train = data['y_train']
-            y_val = data['y_val']
-            zca = None
-            try:
-                zca = data['zca']
-            except KeyError:
-                pass
-            metadata = None
-            try:
-                metadata = data['metadata']
-            except KeyError:
-                pass
-            return cls(X_train, X_val, y_train, y_val, zca=zca, metadata=metadata)
+        data = np.load(filename)
+        X_train = data['X_train']
+        X_val = data['X_val']
+        y_train = data['y_train']
+        y_val = data['y_val']
+
+        zca = None
+        try:
+            zca = data['zca']
+        except (KeyError, ValueError):
+            pass
+
+        metadata = None
+        try:
+            metadata = data['metadata']
+        except KeyError:
+            pass
+        return cls(X_train, X_val, y_train, y_val, zca=zca, metadata=metadata)

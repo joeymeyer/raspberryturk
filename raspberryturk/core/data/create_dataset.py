@@ -94,7 +94,7 @@ class DatasetCreator(object):
 
 class _ClassEncodingAction(argparse.Action):
     def __call__(self, parser, namespace, values, option_string=None):
-        value_lookup = {f.func_name:f for f in class_encoding.ENCODING_FUNCTIONS}
+        value_lookup = {f.__name__: f for f in class_encoding.ENCODING_FUNCTIONS}
         setattr(namespace, self.dest, value_lookup[values])
 
 def _bounded_float(x):
@@ -110,7 +110,7 @@ def _get_args():
     parser.add_argument('base_path', type=os.path.abspath,
                         help="Base path for data processing.")
     parser.add_argument('encoding_function', type=str, \
-                        choices=[f.func_name for f in class_encoding.ENCODING_FUNCTIONS],
+                        choices=[f.__name__ for f in class_encoding.ENCODING_FUNCTIONS],
                         action=_ClassEncodingAction,
                         help="Encoding function to use for piece classification. \
                               See class_encoding.py for possible values.")

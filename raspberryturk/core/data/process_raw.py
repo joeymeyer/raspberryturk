@@ -52,7 +52,7 @@ def _process(board, img, target_path):
         piece = board.piece_at(i)
         fn = chess.SQUARE_NAMES[i]
         sq = cf.square_at(i)
-        rand_addition = hashlib.sha1(str(random())).hexdigest()[0:24]
+        rand_addition = hashlib.sha1(str(random()).encode()).hexdigest()[0:24]
         for a in range(0, 360, 90):
             sym = piece.symbol() if piece is not None else 'e'
             img_name = os.extsep.join([rand_addition, 'jpg'])
