@@ -8,4 +8,4 @@ tk
 matplotlib
 
 opencv-python
-python-chess
+chess

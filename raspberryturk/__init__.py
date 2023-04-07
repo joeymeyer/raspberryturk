@@ -14,7 +14,7 @@ def _root():
     return os.path.abspath(os.sep)
 
 def _var_subdir(subdir, *paths):
-    return os.path.join(_root(), 'var', subdir, app_directory, *paths)
+    return os.path.join('var', subdir, app_directory, *paths)
 
 def cache_path(*paths):
     return _var_subdir('cache', *paths)
@@ -38,7 +38,8 @@ class RaspberryTurkError(Exception):
     pass
 
 def is_running_on_raspberryturk():
-    return gethostname() == 'raspberryturk'
+    # return gethostname() == 'raspberryturk'
+    return True
 
 LOGGING_FORMAT = "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
 

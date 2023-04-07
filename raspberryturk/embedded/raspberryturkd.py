@@ -1,9 +1,8 @@
 import logging
-import signal
 import time
-from daemon import runner
+
 import raspberryturk
-from raspberryturk.embedded.agent import Agent
+from raspberryturk.embedded import offline
 
 
 class RaspberryTurkDaemon(object):
@@ -20,7 +19,7 @@ class RaspberryTurkDaemon(object):
         self.logger = logging.getLogger(__name__)
         self.logger.info("Starting RaspberryTurkDaemon.")
         time.sleep(1)
-        with Agent() as a:
+        with offline.Agent() as a:
             while self._interrupt_signum is None:
                 a.perception_action_sequence()
         self.logger.warn("Received signal {}.".format(self._interrupt_signum))
@@ -31,13 +30,7 @@ class RaspberryTurkDaemon(object):
 
 def main():
     rtd = RaspberryTurkDaemon()
-    daemon_runner = runner.DaemonRunner(rtd)
-    daemon_runner.daemon_context.signal_map = {
-        signal.SIGINT: rtd.interrupt_handler,
-        signal.SIGTERM: rtd.interrupt_handler,
-        signal.SIGHUP: 'terminate',
-    }
-    daemon_runner.do_action()
+    rtd.run()
 
 if __name__ == '__main__':
     main()

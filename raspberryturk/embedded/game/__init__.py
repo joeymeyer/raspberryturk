@@ -1,12 +1,18 @@
 import os
 import logging
+from pathlib import Path
+
 import chess
 import time
 from raspberryturk import games_path
 from chess.pgn import read_game, Game, FileExporter
 
-TEMPORARY_GAME_PATH = os.path.extsep.join(['tmp', 'pgn'])
-CURRENT_GAME_PATH = games_path(os.path.extsep.join(['game', 'pgn']))
+from raspberryturk.core import mkdir
+
+TEMPORARY_GAME_PATH = Path(os.path.extsep.join(['tmp', 'pgn']))
+mkdir(TEMPORARY_GAME_PATH.parent)
+CURRENT_GAME_PATH = Path(games_path(os.path.extsep.join(['game', 'pgn'])))
+mkdir(CURRENT_GAME_PATH.parent)
 
 def _logger():
     return logging.getLogger(__name__)
@@ -22,7 +28,7 @@ def _save_game(game, path=CURRENT_GAME_PATH):
     game.accept(exporter)
     pgn.close()
     _logger().info("Done saving game '{}'.".format(path))
-    _sync()
+    # _sync()
 
 def is_temporary():
     base = os.path.basename(os.path.realpath(CURRENT_GAME_PATH))
@@ -50,7 +56,7 @@ def enter_game(fn):
     _logger().info("Entered game {} -> {}".format(CURRENT_GAME_PATH, fn))
     _sync()
 
-def get_board():
+def get_board() -> chess.Board:
     g = _game()
     return g.end().board()
 

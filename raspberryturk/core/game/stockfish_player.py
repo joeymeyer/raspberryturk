@@ -1,11 +1,12 @@
-from chess import uci
+import chess.engine
+
 
 class StockfishPlayer(object):
     def __init__(self):
-        self._engine = uci.popen_engine('stockfish')
-        self._engine.uci()
+        self._engine = chess.engine.SimpleEngine.popen_uci("/usr/games/stockfish")
+        # self._engine.uci()
 
-    def select_move(self, board):
-        self._engine.position(board)
-        result = self._engine.go(movetime=1000)
-        return result.bestmove
+    def select_move(self, board) -> chess.Move:
+        # self._engine.position(board)
+        result = self._engine.play(board, chess.engine.Limit(time=0.1))
+        return result.move
