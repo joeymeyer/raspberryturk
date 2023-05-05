@@ -8,6 +8,8 @@ __author__ = 'Joey Meyer'
 __email__ = 'jmeyer41@gmail.com'
 __version__ = '0.0.1-beta'
 
+from threading import Timer
+
 app_directory = 'raspberryturk'
 
 def _root():
@@ -64,3 +66,9 @@ def active_log_stream():
 
 def active_log_path():
     return active_log_stream().name
+
+
+class RepeatTimer(Timer):
+    def run(self):
+        while not self.finished.wait(self.interval):
+            self.function(*self.args, **self.kwargs)
