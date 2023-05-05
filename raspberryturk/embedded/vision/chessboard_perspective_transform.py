@@ -1,9 +1,15 @@
-import numpy as np
 import logging
+from time import sleep
+
+import numpy as np
+
+from core import opencv
 from raspberryturk import lib_path, RaspberryTurkError, setup_console_logging
+
 
 def _chessboard_perspective_transform_path():
     return lib_path('chessboard_perspective_transform.npy')
+
 
 def get_chessboard_perspective_transform():
     try:
@@ -12,21 +18,26 @@ def get_chessboard_perspective_transform():
     except IOError:
         raise RaspberryTurkError("No chessboard perspective transform found. Camera position recalibration required.")
 
-def recalibrate_camera_position():
+
+def recalibrate_camera_position(frame):
     import cv2
     from itertools import product
     from sklearn.linear_model import LinearRegression
     from sklearn.preprocessing import PolynomialFeatures
     from scipy.spatial.distance import euclidean
 
-    board_size = (7,7)
-    _, frame = cv2.VideoCapture(0).read()
-    gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-    found, corners = cv2.findChessboardCorners(gray, board_size, flags=cv2.CALIB_CB_NORMALIZE_IMAGE|cv2.CALIB_CB_ADAPTIVE_THRESH)
+    board_size = (7, 7)
+    frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+    cv2.imwrite('frame.png', frame)
+    found, corners = cv2.findChessboardCorners(
+        frame, board_size,
+        flags=cv2.CALIB_CB_NORMALIZE_IMAGE | cv2.CALIB_CB_ADAPTIVE_THRESH,
+        # flags=cv2.CALIB_CB_NORMALIZE_IMAGE,
+    )
 
     assert found, "Couldn't find chessboard."
 
-    z = corners.reshape((49,2))
+    z = corners.reshape((49, 2))
 
     board_center = z[24]
     frame_center = frame.shape[1] / 2.0, frame.shape[0] / 2.0
@@ -76,7 +87,9 @@ def main():
     logger = logging.getLogger(__name__)
     logger.info("Begin camera position recalibration...")
     try:
-        recalibrate_camera_position()
+        with opencv.Camera(4, (1280, 720)) as cam:
+            sleep(2)
+            recalibrate_camera_position(cam.frame)
     except AssertionError as e:
         logger.error(e)
     else:
